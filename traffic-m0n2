@@ -1,0 +1,35 @@
+#!/usr/bin/python3
+from scapy.all import *
+import psutil
+
+iface = 'wlp3s0'
+target_host = '10.0.0.34'
+
+def capture_and_save(filename, timeout=5, iface="eth0", filter=None):
+
+    # Capture packets
+  captured_packets = sniff(timeout=timeout, iface=iface, filter=filter)
+
+  # Write captured packets to a PCAP file
+  wrpcap(filename, captured_packets)
+
+def get_network_traffic_kb():
+    net = psutil.net_io_counters()
+    received_bytes = net.bytes_recv
+    sent_bytes = net.bytes_sent
+
+    received_traffic_kb = round(received_bytes / 1024, 1)
+    sent_traffic_kb = round(sent_bytes / 1024, 1)
+    return received_traffic_kb, sent_traffic_kb
+
+if __name__ == '__main__':
+    while True:
+        received_traffic_kb, sent_traffic_kb = get_network_traffic_kb()
+        print(f"Sent Traffic: {sent_traffic_kb} KB")
+        print(f"Received Traffic: {received_traffic_kb} KB")
+        time.sleep(3)
+
+        # current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        # filename = f"traffic_capture_{current_time}.pcap"
+        # capture_and_save(filename, timeout=5, iface=f"{iface}", filter=f"host {target_host}")
+
