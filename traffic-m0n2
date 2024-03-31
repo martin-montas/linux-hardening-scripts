@@ -65,7 +65,6 @@ def check_network_bottleneck(interval=5, threshold=1000000):  # Adjust threshold
             filename = f"traffic_capture_{current_time}.pcap"
             capture_and_save(filename,  iface=iface, filter=target_host, count=count)
 
-            # create the file here
             print("Potential network bottleneck detected!")
 
 # Run the function to continuously monitor network bandwidth
