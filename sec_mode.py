@@ -93,32 +93,22 @@ if __name__ == '__main__':
     # Parse arguments
     args = parser.parse_args()
 
-
-    # Access the parsed arguments
-    remote                      = args.remote
-    user                        = args.user
-    ip                          = args.ip
-    port                        = args.port
-    ssh                         = args.ssh
-    systemd                     = args.systemd
-    service_list                = args.service_list
-    password                    = args.password
-
     REMOTE_SET = False
 
     # should the script  be run remotely 
-    if (ip and user and password):
+    if (args.ip and args.user and args.password):
         REMOTE_SET = True
-        if (systemd and not service_list) or (service_list and not systemd):
+        if (args.systemd and not args.service_list) or (args.service_list and not args.systemd):
             print("You should use both the --systemd and service_list command.")
             sys.exit(1)
-        if ssh and systemd:
+        if args.ssh and args.systemd:
             print("You should use one not both the --systemd and --ssh command together (pick one).")
             sys.exit(1)
-    if ssh:
+    if args.ssh:
+
         if REMOTE_SET:
             ssh_command = 'sudo sed -i "s/^PermitRootLogin.*/PermitRootLogin no/" /etc/ssh/sshd_config'
-            output ,stderr = remote_exec(ip, user, password, ssh_command)
+            output ,stderr = remote_exec(args.ip, args.user, args.password, ssh_command)
             if stderr:
                 print(stderr)
                 sys.exit(1)
@@ -136,17 +126,15 @@ if __name__ == '__main__':
                 print(output)
                 sys.exit(0)
 
-    if systemd:
+    if args.systemd:
         if REMOTE_SET:
             ssh_command = '''
-
             '''
-
-            
             sys.exit(0)
         if not REMOTE_SET:
             print("sytemd is not remote!")
             sys.exit(0)
+
     else:
         print ("Couldn't load the program.")
         sys.exit(1)
