@@ -1,5 +1,4 @@
 # Linux Scripts
-
 ---
 
 This is an group of Linux scripts made to be implemented on debian-based systems.

@@ -1,0 +1,18 @@
+---
+- name: Template File
+  hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Template command
+      command: ls /etc/audit/rules.d/audit.rules
+      register: command_output
+
+    - name: Display Command Output
+      debug:
+        var: command_output.stdout_lines
+
+
+
+
