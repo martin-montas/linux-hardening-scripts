@@ -1,0 +1,13 @@
+### todo:
+
+Add the following line to /etc/pam.d/system-login to add a delay of at least 4 seconds between failed login attempts:
+
+/etc/pam.d/system-login
+
+auth optional pam_faildelay.so delay=4000000
+
+On systems with many, or untrusted users, it is important to limit the number of processes each can run at once, therefore preventing fork bombs and other denial of service attacks. /etc/security/limits.conf determines how many processes each user, or group can have open, and is empty (except for useful comments) by default. Adding the following lines to this file will limit all users to 100 active processes, unless they use the prlimit command to explicitly raise their maximum to 200 for that session. These values can be changed according to the appropriate number of processes a user should have running, or the hardware of the box you are administrating.
+
+* soft nproc 100
+* hard nproc 200
+
