@@ -10,7 +10,7 @@ VAR_SET=()
 check_for_package() {
 
     # checks is a  desktop enviroment exist
-    SEARCH_FOR_PACKAGE=$(dpkg -l | grep -E 'ubuntu-desktop|kubuntu-desktop|xubuntu-desktop|gnome-desktop')
+    SEARCH_FOR_PACKAGE=$(dpkg -l | grep -E 'ubuntu-desktop|kubuntu-desktop|xubuntu-desktop|gnome-desktop|mate-desktop')
     if [[ -n "$SEARCH_FOR_PACKAGE" ]]; then
         #echo $SEARCH_FOR_PACKAGE
         VAR_SET+=("desktop found!")
