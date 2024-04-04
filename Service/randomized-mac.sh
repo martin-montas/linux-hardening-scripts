@@ -2,7 +2,7 @@
 
 #      This Bash script creates a file for the NetworkManager folder that randomizes 
 #      the MAC address of your system for harder identification. Remember that this script 
-#      only depends of firmware support for the interface that are supported for this action.
+#      only depends of firmware support for interfaces that are supported for this action.
 #
 #       should be run as sudo.
 #
