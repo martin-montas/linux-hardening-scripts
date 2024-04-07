@@ -29,11 +29,27 @@ cron=(
 'chown root:root /etc/cron.d'
 'chmod og-rwx /etc/cron.d'
 )
+declare -a cron2
 
+cron2=(
+'chmod 644 /etc/passwd'
+'chown root:root /etc/passwd'
+'chmod 644 /etc/group'
+'chown root:root /etc/group'
+'chmod 600 /etc/shadow'
+'chown root:root /etc/shadow'
+'chown root:root /etc/gshadow'
 
-# Iterate over the array and execute each command
+)
+
+for cmd in "${cron2[@]}"; do
+    echo "Executing command of cron2: $cmd"
+    eval "$cmd"
+    echo "------------------------------------"
+done
+
 for cmd in "${cron[@]}"; do
-    echo "Executing command: $cmd"
+    echo "Executing command of cron: $cmd"
     eval "$cmd"
     echo "------------------------------------"
 done
