@@ -14,6 +14,8 @@ lines=(
     "kernel.dmesg_restrict=1"
     "kernel.printk=3 3 3 3"
     "kernel.unprivileged_bpf_disabled=1"
+    "kernel.randomize_va_space=2"
+    "kernel.exec-shield=1"
     "net.core.bpf_jit_harden=2"
     "dev.tty.ldisc_autoload=0"
     "vm.unprivileged_userfaultfd=0"
@@ -46,6 +48,7 @@ lines=(
     "fs.protected_hardlinks=1"
     "fs.protected_fifos=2"
     "fs.protected_regular=2"
+    "fs.suid_dumpable=0"
 )
 
 
