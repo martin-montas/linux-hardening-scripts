@@ -1,0 +1,19 @@
+#!/usr/bin/bash
+
+#       File/lock-boot-dir-sh is a Bash script that locks the boot directory.
+#       It should be run as root.
+#
+#       Author: @eto330
+#
+
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
+sudo chattr +i /boot
+
+sudo chown root:root /boot
+sudo chmod 700 /boot
+
+echo "The boot directory has been locked."
