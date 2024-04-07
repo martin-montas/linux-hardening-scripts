@@ -3,6 +3,9 @@
 #           process-users.sh is a Bash script that adds a private process to /etc/fstab
 #           It should be run as root.
 #
+#           by adding the private process to /etc/fstab and then remounting /proc
+#           you make sure you can not access /proc from any other user.
+#
 #           Author: @eto330
 
 
