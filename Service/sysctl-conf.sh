@@ -5,8 +5,6 @@ then echo "Please run as root"
     exit
 fi
 
-
-
 # Lines to be appended to the sysctl.conf file for persistent
 # security thru boots.
 lines=(
