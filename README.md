@@ -14,9 +14,11 @@ Feel free to browse through the scripts available here. Each script is documente
 ## Contributions:
 
 Contributions are welcome! If you have a useful bash script that you would like to share with the community, please feel free to submit a pull request. All contributions will be reviewed for quality and relevance to ensure this repository remains a valuable resource for everyone.
-Disclaimer:
+
+## Disclaimer:
 
 These scripts are provided as-is and are meant to be used responsibly. Ensure that you understand the purpose and implications of each script before running them on your systems. Some scripts may require elevated privileges to function correctly.
-Get Started:
+
+## Get Started:
 
 Explore the scripts available in this repository and start simplifying your security and networking tasks today!
