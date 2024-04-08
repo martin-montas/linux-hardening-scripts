@@ -10,7 +10,8 @@ Welcome to the Bash Scripts repository, a collection of useful scripts primarily
 ## Usage:
 
 Feel free to browse through the scripts available here. Each script is documented and comes with usage instructions to help you leverage its capabilities effectively.
-Contributions:
+
+## Contributions:
 
 Contributions are welcome! If you have a useful bash script that you would like to share with the community, please feel free to submit a pull request. All contributions will be reviewed for quality and relevance to ensure this repository remains a valuable resource for everyone.
 Disclaimer:
