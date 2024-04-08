@@ -7,3 +7,9 @@ curated set of scripts that can automate common tasks, simplify complex procedur
 secure computing environment.
 
 
+Key Features:
+
+Security Tools: Explore scripts for monitoring system security, analyzing logs, managing firewall rules, and more.
+Networking Utilities: Discover scripts for network diagnostics, configuration management, packet analysis, and traffic monitoring.
+System Administration: Find scripts to automate routine system administration tasks, backup procedures, and software deployment.
+
