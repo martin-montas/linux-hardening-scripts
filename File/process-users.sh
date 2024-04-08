@@ -4,7 +4,8 @@
 #           It should be run as root.
 #
 #           by adding the private process to /etc/fstab and then remounting /proc
-#           you make sure you can not access /proc from any other user.
+#           you make sure you can not access /proc from any other user and prevents
+#           other users access to your private process.
 #
 #           Author: @eto330
 
