@@ -39,7 +39,6 @@ cron2=(
 'chmod 600 /etc/shadow'
 'chown root:root /etc/shadow'
 'chown root:root /etc/gshadow'
-
 )
 
 for cmd in "${cron2[@]}"; do
@@ -53,5 +52,6 @@ for cmd in "${cron[@]}"; do
     eval "$cmd"
     echo "------------------------------------"
 done
+
 echo "All commands executed successfully."
 exit 0
