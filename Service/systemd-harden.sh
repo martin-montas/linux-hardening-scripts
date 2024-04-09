@@ -41,14 +41,13 @@ system_parameters=(
 read -p "to what file do you want to append?" file_name
 
 for text_to_append in "${system_parameters[@]}"; do
-
     sed_command="/^\[Service\]/a $text_to_append"
     sed -i "$sed_command" "$file_name"
 done
 
 systemctl restart "$file_name"
-
-echo "Restarted $file_name"
+echo "Restarted $file_name after appending parameters"
+exit
 
 
 
