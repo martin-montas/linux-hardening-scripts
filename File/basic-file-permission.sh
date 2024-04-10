@@ -17,4 +17,8 @@ var_log_file_permission () {
     # Set ownership and permissions for log files
     find /var/log -type f -exec chmod 640 {} \;
 }
-var_log_file_permission 
+var_log_file_permission
+
+
+
+

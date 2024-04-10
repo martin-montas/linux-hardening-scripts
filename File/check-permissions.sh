@@ -4,8 +4,6 @@
 #                    should be run as root
 #                    Author: @eto330
 #
-#                    This script checks for files that have insecure permissions
-#                    and reports them to the console.
 #
 #
 #
@@ -20,7 +18,6 @@ fi
 # Define directories array (adjust paths as needed)
 DIRS=(
   "/usr/bin/"
-  #"/home/bob/personal/python-project/sysadmin-projects/linux-management-scripts/"
   # Add more directories as needed
 )
 
