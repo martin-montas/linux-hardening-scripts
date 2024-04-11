@@ -22,6 +22,7 @@ CONFIG_FILE="${DROPIN_DIR}/security.conf"
 mkdir -p "${DROPIN_DIR}"
 touch "${CONFIG_FILE}"
 
+tee "${CONFIG_FILE}" <<EOF
 [Service]
 # Restrict capabilities
 CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
