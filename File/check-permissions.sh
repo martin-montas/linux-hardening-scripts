@@ -30,7 +30,7 @@ declare -a BAD_FILES
 for dir in "${DIRS[@]}"; do
   # Check if directory exists and is readable
   if [[ -d "$dir" && -r "$dir" ]]; then
-    # Find all files within the current directory (recursive)
+    # Find all files wihi the current directory (recursive)
     while IFS= read -r -d '' filename; do
       PERM=$(stat --format="%a" "$filename" 2>/dev/null)
       if [[ $? -eq 0 && "$PERM" != "$SECURE_PERMISSIONS" ]]; then
