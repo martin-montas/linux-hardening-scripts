@@ -3,9 +3,10 @@
 #                           Service/docker-sec.sh
 #                           should be run as root
 #
+#                           Author: @eto330
 #
-#
-#
+#                           this script adds config variables to the docker daemon unit file
+#                           and to the .zshrc file
 #
 
 if [[ $(id -u) -ne 0 ]]; then

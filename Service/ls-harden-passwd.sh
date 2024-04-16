@@ -9,6 +9,7 @@
 #
 
 
+
 # Define the AppArmor profile content for ls command
 cat <<EOF > /etc/apparmor.d/usr.bin.ls
 # Profile for ls command
