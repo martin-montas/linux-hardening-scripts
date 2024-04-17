@@ -24,7 +24,7 @@ check_ip_malicious() {
 }
 
 # Set your VirusTotal API key
-api_key="ee0a6fb44117d10f3179797ad491ec7d1d908dc6759a28cde8c52547454670ca"
+api_key="api key"
 IP_TO_CHECK=$(ss -t | awk '{print $5}' | grep -oE '\b([0-9]{1,3}\.){3}[0-9]{1,3}\b')
 IPV6_TO_CHECK=$(ss -t | awk '{print $5}' | grep -oE  '\[[0-9a-fA-F:]+\]' | sed 's/[][]//g')
 
