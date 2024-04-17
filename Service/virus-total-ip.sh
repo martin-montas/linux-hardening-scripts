@@ -1,6 +1,4 @@
 #!/usr/bin/bash
-
-
 # Function to check if IP address is malicious
 check_ip_malicious() {
     local api_key="$1"
