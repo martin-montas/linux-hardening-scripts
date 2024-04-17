@@ -1,5 +1,15 @@
 #!/usr/bin/bash
-# Function to check if IP address is malicious
+
+#                       Service/virus-total-ip.sh
+#                       
+#                       this script uses the virustotal api_key 
+#                       and finds any of the IP addresses connected
+#                       to the system and finds if they are malicious 
+#                       or not.
+#
+#                       by: martin-montas
+#
+
 check_ip_malicious() {
     local api_key="$1"
     local ip_address="$2"
