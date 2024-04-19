@@ -3,3 +3,4 @@ lynis-report.dat
 test.sh
 test.py
 network-packets.pcap
+encrypting-file.sh
