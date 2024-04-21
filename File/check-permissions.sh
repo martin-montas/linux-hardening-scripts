@@ -2,7 +2,7 @@
 
 #                    File/check-permissions.sh
 #                    should be run as root
-#                    Author: @eto330
+#                    Author: @martin-montas
 #
 #
 #

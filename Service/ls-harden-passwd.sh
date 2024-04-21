@@ -9,7 +9,6 @@
 #
 
 
-
 # Define the AppArmor profile content for ls command
 cat <<EOF > /etc/apparmor.d/usr.bin.ls
 # Profile for ls command
@@ -19,7 +18,6 @@ profile /usr/bin/ls {
   /etc/ r,
   /etc/passwd rw,
   /etc/group rw,
-
   # Allow read access to all other files and directories
   /** r,
 }
