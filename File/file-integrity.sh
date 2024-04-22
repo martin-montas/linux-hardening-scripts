@@ -1,56 +1,116 @@
 #!/bin/bash
 
-# Check if running as root (uncomment if needed)
-# if [[ $(id -u) -ne 0 ]]; then
-#   echo "Please run as root."
-#   exit 1
-# fi
+declare HASH_A_FILE=
+declare SEE_INTEGRITY=
+declare FILE=
 
-clear
-cat << "EOF"
+# Function to display usage information
+function usage() {
+    echo "Options:  "
+    echo " [-h  --help]     Display this help message                               "
+    echo " [-f  --file]  the file that we want to hash/see integrity                "
+    echo " [-v  --version]  Display version information                             "
+    echo " [-hf --hash_a_file]  Boolean [either 1 or 0] integrates a new hash       "
+    echo " [-s  --see_integrity]  Boolean [either 1 or 0] see given file integrity  "
 
+}
 
+while [[ $# -gt 0 ]]; do
+    case "$1" in
 
-               __________.__.__              _____                .__  __                
-              \_   _____/|__|  |   ____     /     \   ____   ____ |__|/  |_  ___________ 
-               |    __)  |  |  | _/ __ \   /  \ /  \ /  _ \ /    \|  \   __\/  _ \_  __ \
-               |     \   |  |  |_\  ___/  /    Y    (  <_> )   |  \  ||  | (  <_> )  | \/
-               \___  /   |__|____/\___  > \____|__  /\____/|___|  /__||__|  \____/|__|   
-                   \/                 \/          \/            \/                       
-EOF
+        -hf|--hash_a_file)
+            # Handle the greeting tag
+            HASH_A_FILE="$2"
+            shift 2 
+            ;;
 
-BOLD='\e[1m'
-UNDERLINE='\e[4m'
-RED='\e[31m'
-GREEN='\e[32m'
-RESET='\e[0m'  
-ITALIC="\e[3m"
-yELLOW='\e[33m'
+        -h|--help)
+            # help tag
+            help
+            shift 2 
+            ;;
+        -s|--see_integrity)
+            # Handle the command tag
+            SEE_INTEGRITY="$2"
+            shift 2 
+            ;;
 
-echo ' '
-echo ' '
-echo ' '
-echo -e "                   ${BOLD}${GREEN}  *Options*: ${RESET}"
-echo -e "               1.  ${YELLOW}${UNDERLINE}See current files integrity${RESET} ${ITALIC}[press: i]${RESET}"
-echo -e "               2.  ${YELLOW}${UNDERLINE}Insert new files to monitor${RESET} ${ITALIC}[press: n]${RESET}"
-read            option
+        -f|--file)
+            FILE="$2"
+            shift 2  
+            ;;
 
-if [[ $option == 'i']]; then
-    exit 
-fi
+        *)
+            # Handle unknown tags or invalid usage
+            echo "Unknown tag or usage: $1"
+            shift  # Move to the next argument
+            ;;
+    esac
+done
 
-if [[ $option == 'n']]; then
-    exit 
+HASH_DIRECTORY="./file_monitor/"
+
+# Check if the directory doesn't exist
+if [ ! -d "$HASH_DIRECTORY" ]; then
+    mkdir -p "$HASH_DIRECTORY"
 else
-    cout "Not a valid command!"
+    :
 fi
 
-# ENCRYPTED_FILE="hashed_data.enc"
-# HASH_FILE="file_hashes.txt"
 
-# Encrypt file containing hashes
-# openssl enc -aes-256-cbc -salt -in "$HASH_FILE" -out "$ENCRYPTED_FILE"
+function INSERT_NEW_FILE() {
+    read -s "enter the password for the hash" PASSWORD
 
-# Decrypt and verify integrity
-# openssl enc -d -aes-256-cbc -in "$ENCRYPTED_FILE" -out "decrypted_hashes.txt"
-# diff "$HASH_FILE" "decrypted_hashes.txt"
+    local ENCRYPTION_FILE="$FULL_PATH_FILE.enc"
+    local FULL_PATH_HASH_FILE="$FULL_PATH_FILE.md5"
+
+    touch                       $FULL_PATH_HASH_FILE
+    touch                       $ENCRYPTION_FILE
+
+    md5sum "$FULL_PATH_FILE" >> $FULL_PATH_HASH_FILE
+
+    # Encrypt hash file: 
+    openssl enc -aes-256-cbc -in $FULL_PATH_HASH_FILE -out $ENCRYPTION_FILE -pass pass:"$PASSWORD"
+    if [[ $? > 0 ]]; then
+        echo "Wrong password. Try again"
+        exit 1
+    fi
+
+    mv $ENCRYPTION_FILE         $HASH_DIRECTORY
+    mv $FULL_PATH_HASH_FILE     $HASH_DIRECTORY
+    chattr +i                   $FULL_PATH_HASH_FILE
+    chattr +i                   $ENCRYPTION_FILE
+}
+
+function SEE_FILE_INTEGRITY() {
+    read -s "Enter the password for the encrypted hash: " PASSWORD
+    ENCRYPTION_FILE=$(find $HASH_DIRECTORY -type f -name $FILE)
+    echo    "$ENCRYPTION_FILE"
+
+    if [[ -z $ENCRYPTION_FILE ]]; then
+        echo "Couldn't find the file"
+        exit 1
+    fi
+    
+    chattr -i $FILE.md5
+    openssl enc -d -aes-256-cbc -in $FILE.enc -out $FILE -pass pass:$PASSWORD > /dev/null
+    if [[ $? > 0 ]]; then
+        echo "Wrong password. Try again"
+        exit 1
+    fi
+    echo            "All done"
+    exit            0
+
+}
+
+if [ -n "$HASH_A_FILE" ]; then
+    INSERT_NEW_FILE
+fi
+
+if [ -n "$SEE_INTEGRITY" ]; then
+elif [ -n "$file" ]; then
+    SEE_FILE_INTEGRITY
+else 
+    echo "You forgot to include the file name [FULL PATH]." 
+fi
+
