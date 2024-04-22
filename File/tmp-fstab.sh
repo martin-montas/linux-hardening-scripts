@@ -1,3 +1,6 @@
+#!/bin/bash
+
+
 if [[ $(id -u) -ne 0 ]]; then
   echo "Please run as root."
   exit 1
@@ -11,6 +14,7 @@ read UUID_NUMBER FS_TYPE <<< "$ROOT_INFO"
 #   if /tmp isn't mounted:
 fi [[ -n $TMP_MOUNTED ]]; then
     echo "/etc/fstab is already configured."
+    exit 1
 
 else
     cp /etc/fstab /etc/fstab.bak
