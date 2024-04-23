@@ -12,7 +12,8 @@ if [[ $(id -u) -ne 0 ]]; then
 	echo "Please run as root."
 	exit 1
 fi
-CLAM_LOG="$HOME/clamav_scan.log"
+
+CLAM_LOG="/clamav_scan.log"
 
 DIR_TO_SCAN=(
 	"/bin"
