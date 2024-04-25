@@ -36,7 +36,6 @@ api_key="api key"
 IP_TO_CHECK=$(ss -t | awk '{print $5}' | grep -oE '\b([0-9]{1,3}\.){3}[0-9]{1,3}\b')
 IPV6_TO_CHECK=$(ss -t | awk '{print $5}' | grep -oE  '\[[0-9a-fA-F:]+\]' | sed 's/[][]//g')
 
-
 # checks for the malicious ipv4 and prints if it is.
 for ip in $IP_TO_CHECK; do
     check_ip_malicious "${api_key}" ${ip}
