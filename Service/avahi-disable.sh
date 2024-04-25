@@ -6,10 +6,6 @@
 #                   this script idea was taken from a CIS Benchmark
 #                   pdf file.
 #
-#
-
-
-
 
 if [[ $(id -u) -ne 0 ]]; then
   echo "Please run as root."
