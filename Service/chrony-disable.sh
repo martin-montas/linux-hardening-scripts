@@ -23,30 +23,36 @@ CHRONY=0
 
 # Check if ntpd service is running and enabled
 if systemctl is-active --quiet ntpd && systemctl is-enabled --quiet ntpd; then
-    NTPD+=1
+    NTPD=1
 fi
 
 # Check if systemd-timesyncd service is running and enabled
 if systemctl is-active --quiet systemd-timesyncd && systemctl is-enabled --quiet systemd-timesyncd; then
-    SYSTEMD_TIMESYNCD+=1
+    YSTEMD_TIMESYNCD=1
 fi
 
 # Check if systemd-timesyncd service is running and enabled
 if systemctl is-active --quiet chrony && systemctl is-enabled --quiet chrony; then
-    CHRONY+=1
+    CHRONY=1
 fi
 
 if [[ $NTPD == 1 && $SYSTEMD_TIMESYNCD == 1 ]]; then
     echo "You should only have one time synchronization method."
     echo "Currently you have ntpd and systemd-timesyncd."
+    exit 1
 fi
 
 if [[ $NTPD == 1 && $CHRONY == 1 ]]; then
     echo "You should only have one time synchronization method."
     echo "Currently you have ntpd and chrony"
+    exit 1
 fi
 
 if [[ $SYSTEMD_TIMESYNCD == 1 && $CHRONY == 1 ]]; then
     echo "You should only have one time synchronization method."
     echo "Currently you have systemd-timesyncd and chrony"
+    exit 1
 fi
+
+echo "All the time synchronization daemons are ok."
+    exit 0
