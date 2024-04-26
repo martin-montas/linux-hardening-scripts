@@ -16,8 +16,8 @@ if [[ $(id -u) -ne 0 ]]; then
   exit 1
 fi
 
-SERVICE_NAME="nsf-kernel-server"
-INSTALLED=$(dpkg -l | awk '$2 == "nsf-kernel-server" {print $1}' | grep '^ii') 
+SERVICE_NAME="bind9"
+INSTALLED=$(dpkg -l | awk '$2 == "bind9" {print $1}' | grep '^ii') 
 
 if [[ -n $INSTALLED ]]; then
     yes | apt  purge $SERVICE_NAME  >  /dev/null
