@@ -17,7 +17,7 @@ if [[ $(id -u) -ne 0 ]]; then
 fi
 
 SERVICE_NAME="vsftpd"
-INSTALLED=$(dpkg -l | awk -v var="$SERVICE_NAME" '$2 == "var" {print $1}' | grep '^ii') 
+INSTALLED=$(dpkg -l | awk -v var="$SERVICE_NAME" '$2 == "vsftpd" {print $1}' | grep '^ii') 
 
 if [[ -n $INSTALLED ]]; then
     yes | apt  purge $SERVICE_NAME  >  /dev/null

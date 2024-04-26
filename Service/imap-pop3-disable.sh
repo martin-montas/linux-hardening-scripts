@@ -8,7 +8,7 @@
 #               Benchmark. Rationale:
 #               Unless POP3 and/or IMAP servers are to be provided by this system, it is recommended
 #               that the package be removed to reduce the potential attack surface.
-
+#
 if [[ $(id -u) -ne 0 ]]; then
   echo "Please run as root."
   exit 1
@@ -16,8 +16,8 @@ fi
 
 POP3="dovecot-pop3d"
 IMAP="dovecot-imapd"
-INSTALLED_POP3=$(dpkg -l | awk -v var="$POP3" '$2 == "var" {print $1}' | grep '^ii') 
-INSTALLED_IMAP=$(dpkg -l | awk -v var="$IMAP" '$2 == "var" {print $1}' | grep '^ii') 
+INSTALLED_POP3=$(dpkg -l | awk  '$2 == "dovecot-pop3d" {print $1}' | grep '^ii') 
+INSTALLED_IMAP=$(dpkg -l | awk  '$2 == "dovecot-imapd" {print $1}' | grep '^ii') 
 ALL_INSTALLED=0
 
 

@@ -15,7 +15,7 @@ if [[ $(id -u) -ne 0 ]]; then
 fi
 
 SERVICE="squid"
-INSTALLED=$(dpkg -l | awk -v var="$SERVICE" '$2 == "var" {print $1}' | grep '^ii') 
+INSTALLED=$(dpkg -l | awk  '$2 == "squid" {print $1}' | grep '^ii') 
 
 if [[ -n $INSTALLED ]]; then
     yes | apt  purge $SERVICE  >  /dev/null
