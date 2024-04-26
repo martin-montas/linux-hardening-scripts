@@ -81,27 +81,22 @@ function INSERT_NEW_FILE() {
     chattr +i                   $FULL_PATH_HASH_FILE
     chattr +i                   $ENCRYPTION_FILE
 }
+def check_network_bottleneck(interval=5, threshold=1000000):  # Adjust threshold as needed
+    while True:
+        sent_bytes, recv_bytes = calculate_bandwidth(interval)
+        sent_kbps = sent_bytes / 1024 / interval
+        recv_kbps = recv_bytes / 1024 / interval
 
-function SEE_FILE_INTEGRITY() {
-    read -s "Enter the password for the encrypted hash: " PASSWORD
-    ENCRYPTION_FILE=$(find $HASH_DIRECTORY -type f -name $FILE)
-    echo    "$ENCRYPTION_FILE"
+        print(f"Sent: {sent_kbps:.2f} KB/s, Received: {recv_kbps:.2f} KB/s")
 
-    if [[ -z $ENCRYPTION_FILE ]]; then
-        echo "Couldn't find the file"
-        exit 1
-    fi
-    
-    chattr -i $FILE.md5
-    openssl enc -d -aes-256-cbc -in $FILE.enc -out $FILE -pass pass:$PASSWORD > /dev/null
-    if [[ $? > 0 ]]; then
-        echo "Wrong password. Try again"
-        exit 1
-    fi
-    echo            "All done"
-    exit            0
+        # Check if any of the bandwidth exceeds the threshold
+        if sent_kbps > threshold or recv_kbps > threshold:
 
-}
+            current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            filename = f"traffic_capture_{current_time}.pcap"
+            capture_and_save(filename,  iface=iface, filter=target_host, count=count)
+
+            print("Potential network bottleneck detected!")
 
 if [ -n "$HASH_A_FILE" ]; then
     INSERT_NEW_FILE
