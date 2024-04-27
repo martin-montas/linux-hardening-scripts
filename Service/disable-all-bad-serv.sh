@@ -12,7 +12,9 @@ if [[ $(id -u) -ne 0 ]]; then
   exit 1
 fi
 
+# an array of insecure services scripts that shouldn't run:
 ARR_OF_SCRIPT=(
+
         "./Service/ftp-disable.sh"
         "./Service/nfs-disable.sh"
         "./Service/ldap-disable.sh"
@@ -21,6 +23,13 @@ ARR_OF_SCRIPT=(
         "./Service/avahi-disable.sh"
         "./Service/squid-disable.sh"
         "./Service/imap-pop3-disable.sh"
+        "./Service/nis-disable.sh"
+        "./Service/chrony-disable.sh"
+        "./Service/dns-disable.sh"
+        "./Service/telnet-disable.sh"
+        "./Service/snm-disable.sh"
+        "./Service/rpcbind-disable.sh"
+
 )
 
 for file in "${ARR_OF_SCRIPT[@]}"; do
