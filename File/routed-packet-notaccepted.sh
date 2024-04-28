@@ -16,7 +16,7 @@
 #       not use the system as a way to reach the private address systems. If,
 #       however, source routed packets were allowed, they could be used to gain 
 #       access to the private address systems as the route could be specified, 
-#       rather than rely on routing protocols that did not allow this routing.
+#       rather than rely on routing protocols that did not allow this routing
        
 
 
