@@ -10,32 +10,31 @@
 #               Attackers could use bogus ICMP redirect messages to maliciously 
 #               alter the system routing tables and get them to send packets to 
 #               incorrect networks and allow your system packets to be captured.
-#
-#
+
 
 if [[ $(id -u) -ne 0 ]]; then
   echo "Please run as root."
   exit 1
 fi
 
-ALL_ENABLED=$(sysctl net.ipv4.conf.all.accept_redirects)
-DEFAULT_ENABLED=$(sysctl net.ipv4.conf.default.accept_redirects)
+ALL_ENABLED=$(sysctl net.ipv4.conf.all.accept_redirects | grep '0')
+DEFAULT_ENABLED=$(sysctl net.ipv4.conf.default.accept_redirects | grep '0')
 WAS_SET=0
-if [[ $ALL_ENABLED != 0 ]]; then
+if [[ -n $ALL_ENABLED  ]]; then
 
     # sets the given parameters to the sysctl.conf file:
     echo "net.ipv4.conf.all.accept_redirects = 0" >> /etc/sysctl.conf
     (( WAS_SET += 1 ))
     
-    # enforces the paramters without booting:
+    # enforces the parameters without booting:
     sysctl -w net.ipv4.conf.all.accept_redirects=0
 
 fi
-if [[ $DEFAULT_ENABLED != 0 ]]; then
+if [[ -n $DEFAULT_ENABLED ]]; then
     # sets the given parameters to the sysctl.conf file:
     echo "net.ipv4.conf.default.accept_redirects = 0" >> /etc/sysctl.conf
 
-    # enforces the paramters without booting:
+    # enforces the parameters without booting:
     sysctl -w net.ipv4.conf.default.accept_redirects=0
     (( WAS_SET += 1 ))
 fi
