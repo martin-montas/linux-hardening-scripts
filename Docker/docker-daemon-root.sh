@@ -1,66 +1,97 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-#                           Docker/docker-daemon-root.sh
-#                           should run as root.
+#                   Docker/docker-daemon-root.sh
+#                   should run as root.
 #
-#           Rootless mode allows running the Docker daemon and containers 
-#           as a non-root user to mitigate potential vulnerabilities in 
-#           the daemon and the container runtime.
+#   Rationale:
+#       Rootless mode allows running the Docker daemon and containers as a non-root user to
+#       mitigate potential vulnerabilities in the daemon and the container runtime.
+#
+#       This script was refactored with the help of Chatgpt
 #
 
 
+# Define variables
+DOCKERUSER='bob'
+DOCKER_REPO="https://download.docker.com/linux/ubuntu"
+DOCKER_GPG_KEY="$DOCKER_REPO/gpg"
 
 # Check if running as root
 if [ "$(id -u)" -ne 0 ]; then
-    echo "Error: This script must be run as root."
+    echo "Error: This script must be run as root." >&2
     exit 1
 fi
 
-# Check if docker is installed
-if which docker >/dev/null 2>&1; then
-    # Stop Docker service if running
-    if systemctl is-active --quiet docker; then
-        systemctl stop docker
+# Install required packages
+apt_update() {
+    echo "Updating package index..."
+    apt update
+}
+
+install_dependencies() {
+    echo "Installing dependencies..."
+    apt install -y apt-transport-https ca-certificates curl software-properties-common uidmap
+}
+
+# Add Docker repository and install Docker
+install_docker() {
+    echo "Adding Docker repository..."
+    curl -fsSL $DOCKER_GPG_KEY | apt-key add -
+    add-apt-repository "deb [arch=amd64] $DOCKER_REPO focal stable"
+    apt_update
+
+    echo "Installing Docker..."
+    apt install -y docker-ce
+}
+
+# Configure Docker for rootless mode
+configure_docker_rootless() {
+    echo "Configuring Docker for rootless mode..."
+    su -l $DOCKERUSER -c 'curl -fsSL https://get.docker.com/rootless | sh'
+
+    echo "export PATH=/home/$USER/bin:$PATH" >> "$HOME/.bashrc"
+    echo 'export DOCKER_HOST=unix:///run/user/1000/docker.sock' >> "$HOME/.bashrc"
+}
+
+# Disable and enable Docker services
+manage_docker_services() {
+    echo "Disabling Docker service and socket..."
+    systemctl disable --now docker.service docker.socket
+
+    echo "Enabling Docker service for user $DOCKERUSER..."
+    su -l $DOCKERUSER -c 'systemctl --user start docker'
+    su -l $DOCKERUSER -c 'systemctl --user enable docker'
+}
+
+# Enable user to linger and adjust kernel settings
+configure_system() {
+    echo "Configuring system settings..."
+    loginctl enable-linger $DOCKERUSER
+    echo 'net.ipv4.ip_unprivileged_port_start=0' >> /etc/sysctl.conf
+    echo 'kernel.unprivileged_userns_clone=1' >> /etc/sysctl.conf
+    sysctl --system
+}
+
+# Prompt for reboot
+prompt_reboot() {
+    read -r -p "System configuration requires a reboot. Reboot now? [Y/n] " response
+    if [[ $response =~ ^([yY][eE][sS]|[yY]|)$ ]]; then
+        echo "Rebooting system..."
+        reboot
+    else
+        echo "Please remember to reboot your system later."
     fi
+}
 
-    # Remove Docker packages
-    apt remove --yes docker docker-engine docker.io containerd runc || {
-        echo "Error: Failed to remove Docker packages."
-        exit 1
-    }
+# Main function
+main() {
+    install_dependencies
+    install_docker
+    configure_docker_rootless
+    manage_docker_services
+    configure_system
+    prompt_reboot
+}
 
-    # Install Docker in rootless mode
-    curl -fsSL https://get.docker.com/rootless | sh
-
-    # Start Docker service for the current user
-    systemctl --user start docker
-
-    # Set up environment variables
-    DOCKER_USER="$USER"
-    DOCKER_HOME="$(eval echo ~"$DOCKER_USER")"
-    DOCKER_BIN="$DOCKER_HOME/bin"
-
-    echo "export PATH=$DOCKER_BIN:\$PATH" >> "$DOCKER_HOME"/.bashrc
-    echo "export DOCKER_HOST=unix://\$XDG_RUNTIME_DIR/docker.sock" >> "$DOCKER_HOME"/.bashrc
-
-    echo "To enable/disable Docker daemon and use the --user command."
-    exit 0
-else
-    # Install Docker in rootless mode
-    curl -fsSL https://get.docker.com/rootless | sh
-
-    # Start Docker service for the current user
-    systemctl --user start docker
-
-    # Set up environment variables
-    DOCKER_USER="$USER"
-    DOCKER_HOME="$(eval echo ~"$DOCKER_USER")"
-    DOCKER_BIN="$DOCKER_HOME/bin"
-
-    echo "export PATH=$DOCKER_BIN:\$PATH" >> "$DOCKER_HOME"/.bashrc
-    echo "export DOCKER_HOST=unix://\$XDG_RUNTIME_DIR/docker.sock" >> "$DOCKER_HOME"/.bashrc
-
-    echo "To enable/disable Docker daemon and use the --user command."
-    exit 0
-fi
-
+# Execute main function
+main
