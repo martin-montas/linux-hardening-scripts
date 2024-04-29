@@ -8,7 +8,7 @@
 #       mitigate potential vulnerabilities in the daemon and the container runtime.
 #
 #       This script was refactored with the help of Chatgpt
-
+#
 
 
 # Define variables
