@@ -12,7 +12,9 @@
 #       to an unintended and unwanted disclosure of information to other 
 #       containers. Hence, restrict inter-container communication on the 
 #       default network bridge.
-
+#
+#       this script creates a non icc (inter-connected container
+#
 
 
 # Check if running as root
@@ -21,39 +23,53 @@ if [ "$(id -u)" -ne 0 ]; then
     exit 1
 fi
 
-DOCKERUSER='bob'
-DAEMON_FILE="/etc/docker/daemon.json"
+icc_net_kernel_mod() {
+    MODULE_EXISTENCE=$(ls /lib/modules/"$(uname -r)"/kernel/net/bridge/br_netfilter.ko)
+    MODULE_SET=$(lsmod  | grep br_netfilter)
+    
+    # Checks if the kernel module not set 
+    if [ -z "$MODULE_SET" ]; then
 
-# Function to check if the file exists and create it if not
-check_file_exist() {
-    if [ ! -f "$DAEMON_FILE" ]; then
-        touch "$DAEMON_FILE"
+        # If the kernel module exists
+        if [ -n "$MODULE_EXISTENCE" ]; then
+            sudo modprobe br_netfilter
+            sudo sh -c 'echo "br_netfilter" > /etc/modules-load.d/br_netfilter.conf'
+            return 
+        else
+            :
+        fi
     fi
-}
+    # If the kernel module is not set
+    if [ -n "$MODULE_SET" ]; then
+        echo "The module is already set..."
+        return
+    fi
 
-# Function to insert configuration to the file if not already enabled
-insert_to_the_file() {
-    if [ -n "$NOT_ENABLED" ]; then
-        echo "Adding to the $DAEMON_FILE..."
-        # Remove any existing icc setting if present
-        sed -i '/"icc":/d' "$DAEMON_FILE"
-        # Append the new icc setting
-        echo '{ "icc": false }' >> "$DAEMON_FILE"
-        # Restart Docker daemon
-        systemctl restart docker
-        echo "Restarted the Docker daemon"
-        exit 0
+}
+# Function to create a custom bridge network for segregated containers
+create_custom_network() {
+    DOCKERUSER='bob'
+    NETWORK_NAME="non-icc-net"
+    if ! docker network inspect "$NETWORK_NAME" &>/dev/null; then
+        
+    su -l "$DOCKERUSER" -c 'systemctl --user start docker'
+        su -l "$DOCKERUSER" -c "
+        docker network create --driver bridge -o 'com.docker.network.bridge.enable_icc'='false' '$NETWORK_NAME'
+        "
+        echo "Custom network '$NETWORK_NAME' created for segregated containers."
     else
-        echo "The configuration is already set."
-        exit 0
+        echo "Custom network '$NETWORK_NAME' already exists. Skipping network creation."
     fi
 }
 
 # Main function
 main() {
-    NOT_ENABLED=$(su -l "$DOCKERUSER" bash -c 'docker network ls --quiet | xargs docker network inspect --format '\''{{ .Name }}: {{ .Options }}'\'' | grep true')
-    check_file_exist
-    insert_to_the_file
+
+    # Ensure that the network can be set
+    icc_net_kernel_mod
+
+    # Creates the network 
+    create_custom_network
 }
 
 # Call the main function
