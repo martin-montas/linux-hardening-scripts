@@ -13,7 +13,8 @@
 #       containers. Hence, restrict inter-container communication on the 
 #       default network bridge.
 #
-#       this script creates a non icc (inter-connected container
+#       this script creates a non icc (inter-connected communication) network  
+#       and also loads a kernel module that permits us doing so. 
 #
 
 
