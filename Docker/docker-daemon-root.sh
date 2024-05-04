@@ -17,7 +17,7 @@ DOCKER_REPO="https://download.docker.com/linux/ubuntu"
 DOCKER_GPG_KEY="$DOCKER_REPO/gpg"
 
 # Check if running as root
-if [ "$(id -u)" -ne 0 ]; then
+if [  "$(id -u)" -ne 0  "$(id -u)" -ne 0 "$(id -u)" -ne 0 ]; then
     echo "Error: This script must be run as root." >&2
     exit 1
 fi

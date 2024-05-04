@@ -64,39 +64,23 @@ function INSERT_NEW_FILE() {
     local ENCRYPTION_FILE="$FULL_PATH_FILE.enc"
     local FULL_PATH_HASH_FILE="$FULL_PATH_FILE.md5"
 
-    touch                       $FULL_PATH_HASH_FILE
-    touch                       $ENCRYPTION_FILE
+    touch                       "$FULL_PATH_HASH_FILE"
+    touch                       "$ENCRYPTION_FILE"
 
-    md5sum "$FULL_PATH_FILE" >> $FULL_PATH_HASH_FILE
+    md5sum "$FULL_PATH_FILE" >> "$FULL_PATH_HASH_FILE"
 
     # Encrypt hash file: 
-    openssl enc -aes-256-cbc -in $FULL_PATH_HASH_FILE -out $ENCRYPTION_FILE -pass pass:"$PASSWORD"
-    if [[ $? > 0 ]]; then
+    openssl enc -aes-256-cbc -in "$FULL_PATH_HASH_FILE" -out "$ENCRYPTION_FILE" -pass pass:"$PASSWORD"
+    if [[ $? -gt 0 ]]; then
         echo "Wrong password. Try again"
         exit 1
     fi
 
-    mv $ENCRYPTION_FILE         $HASH_DIRECTORY
-    mv $FULL_PATH_HASH_FILE     $HASH_DIRECTORY
-    chattr +i                   $FULL_PATH_HASH_FILE
-    chattr +i                   $ENCRYPTION_FILE
+    mv "$ENCRYPTION_FILE"         "$HASH_DIRECTORY"
+    mv "$FULL_PATH_HASH_FILE"     "$HASH_DIRECTORY"
+    chattr +i                   "$FULL_PATH_HASH_FILE"
+    chattr +i                   "$ENCRYPTION_FILE"
 }
-def check_network_bottleneck(interval=5, threshold=1000000):  # Adjust threshold as needed
-    while True:
-        sent_bytes, recv_bytes = calculate_bandwidth(interval)
-        sent_kbps = sent_bytes / 1024 / interval
-        recv_kbps = recv_bytes / 1024 / interval
-
-        print(f"Sent: {sent_kbps:.2f} KB/s, Received: {recv_kbps:.2f} KB/s")
-
-        # Check if any of the bandwidth exceeds the threshold
-        if sent_kbps > threshold or recv_kbps > threshold:
-
-            current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            filename = f"traffic_capture_{current_time}.pcap"
-            capture_and_save(filename,  iface=iface, filter=target_host, count=count)
-
-            print("Potential network bottleneck detected!")
 
 if [ -n "$HASH_A_FILE" ]; then
     INSERT_NEW_FILE
