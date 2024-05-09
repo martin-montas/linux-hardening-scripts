@@ -20,20 +20,21 @@ DOCKER_FILE="/etc/docker/daemon.json"
 DOCKER_USER='bob'
 
 # Check if insecure registries are configured
-INSECURE_REGISTRIES=$(docker info --format '{{.RegistryConfig.InsecureRegistryCIDRs}}')
+INSECURE_REGISTRIES=$(docker info --format '{{.RegistryConfig.InsecureRegistryCIDRs}}' | wc -l)
 DEFAULT_SHELL=$(getent passwd "$DOCKER_USER" | cut -d: -f7)
 
-if [ -z "$INSECURE_REGISTRIES" ]; then
-    jq -r '. + {"insecure-registries": []}' "$DOCKER_FILE" > "$DOCKER_FILE.tmp" && mv "$DOCKER_FILE.tmp" "$DOCKER_FILE"
+if [[ "$INSECURE_REGISTRIES" -gt 1 ]]; then
 
+        jq -r '. + {"insecure-registries": []}' "$DOCKER_FILE" > "$DOCKER_FILE.tmp" && mv "$DOCKER_FILE.tmp" "$DOCKER_FILE"
+        if grep -q 'zsh' <<< "$DEFAULT_SHELL"; then
+            echo 'export DOCKER_CONTENT_TRUST=1' >> "/home/$DOCKER_USER/.zshrc"
+        elif grep -q 'bash' <<< "$DEFAULT_SHELL"; then
+            echo 'export DOCKER_CONTENT_TRUST=1' >> "/home/$DOCKER_USER/.bashrc"
+        fi
 
-    if grep -q 'zsh' <<< "$DEFAULT_SHELL"; then
-        echo 'export DOCKER_CONTENT_TRUST=1' >> "/home/$DOCKER_USER/.zshrc"
-    elif grep -q 'bash' <<< "$DEFAULT_SHELL"; then
-        echo 'export DOCKER_CONTENT_TRUST=1' >> "/home/$DOCKER_USER/.bashrc"
-    fi
-
-    echo "Restarting the docker daemon..."
-    systemctl restart docker
+        echo "Restarting the docker daemon..."
+        systemctl restart docker
+else
+    echo "All the Docker registries are all good."
 fi
 
