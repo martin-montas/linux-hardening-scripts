@@ -23,7 +23,7 @@ BLUE='\033[0;34m'
 
 RESET='\033[0m'
 
-AUDIT=$(systemctl show -p FragmentPath docker.service | grep FragmentPath)
+AUDIT=$(systemctl show -p FragmentPath docker.service | cut -d '=' -f 2)
 
 # verify the binary exists
 if [ -n "$AUDIT" ]; then
@@ -31,7 +31,7 @@ if [ -n "$AUDIT" ]; then
     # gets the full path of the specify in the audit command 
     FULL_PATH=$(grep -v "FragmentPath=" "$AUDIT" 2> /dev/null)
     if stat -c %U:%G "$FULL_PATH" | grep -v root:root 2> /dev/null; then
-        chown root:root "$FULL_PATH" 2> /dev/null
+        chown root:root "$FULL_PATH" 
         echo -e "${GREEN}[+]${RESET} The file $FULL_PATH is now owned by root."
         exit 0
     else
