@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#                      Service/disable-all-bad-serv.sh
+#            Service/disable-all-bad-serv.sh
 #
-#                      Should run as root.
-#                      This script automates all other scripts that disable services on the repo for ease of use.
-#                      this code is dependant of others scripts on this repo.
-#                      By: martin-montas
+#         Should run as root.
+#         This script automates all other scripts that disable services on the repo for ease of use.
+#         this code is dependant of others scripts on this repo.
+#         By: martin-montas
 
 if [[ $(id -u) -ne 0 ]]; then
   echo "Please run as root."
